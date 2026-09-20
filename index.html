@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+ <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>RMVillasis Enterprises POS</title>
+  <style>*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f3f5f7;color:#17212b}header{background:#163b5c;color:#fff;padding:18px}.wrap{max-width:1250px;margin:auto;padding:16px}.brand{font-size:24px;font-weight:700}.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}button{background:#163b5c;color:#fff;border:0;padding:10px;border-radius:8px;cursor:pointer}input,select{padding:10px;border:1px solid #ccd5dd;border-radius:8px;width:100%}.card{background:#fff;padding:16px;border-radius:12px;margin-bottom:16px;box-shadow:0 2px 9px #0001}.grid{display:grid;grid-template-columns:1.4fr .9fr;gap:16px}@media(max-width:850px){.grid{grid-template-columns:1fr}}.row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}@media(max-width:650px){.row{grid-template-columns:1fr}}.hidden{display:none}.product{display:grid;grid-template-columns:1fr 80px 70px;gap:7px;padding:8px;border-bottom:1px solid #eee}.cart{display:grid;grid-template-columns:1fr 70px 90px 35px;gap:7px;padding:8px;border-bottom:1px solid #eee;align-items:center}.total{font-size:25px;font-weight:bold;margin:15px 0}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.stat{background:#eef4f8;padding:12px;border-radius:8px}.stat b{display:block;font-size:20px;margin-top:5px}table{width:100%;border-collapse:collapse}th,td{padding:7px;border-bottom:1px solid #ddd;text-align:left}.scroll{overflow:auto}.danger{background:#b42318}.ok{background:#18794e}.login{max-width:420px;margin:8vh auto}.muted{color:#6c7880}</style>
+ </head>
+ <body>
+  <div id="login" class="wrap login">
+   <div class="card">
+    <h1>RMVillasis Enterprises</h1>
+    <p>Secure Server POS</p>
+    <input id="u" placeholder="Username"><input id="p" type="password" placeholder="Password" style="margin-top:8px">
+    <button onclick="login()" style="width:100%;margin-top:8px">LOGIN</button>
+    <p id="err"></p>
+    <small>First login: admin / admin123 — change it immediately.</small>
+   </div>
+  </div>
+  <div id="app" class="hidden">
+   <header>
+    <div class="wrap">
+     <div class="brand">RMVillasis Enterprises</div>
+     Point-of-Sale &amp; Business Management <span id="me"></span>
+    </div>
+   </header>
+   <div class="wrap">
+    <div class="tabs">
+     <button onclick="tab('pos')">POS</button>
+     <button onclick="tab('inventory')">Inventory</button>
+     <button onclick="tab('history')">Sales History</button>
+     <button onclick="tab('daily')">Daily Sales</button>
+     <button onclick="tab('expenses')">Salary / Expenses</button>
+     <button onclick="tab('money')">Cash Drawer</button>
+     <button id="auditTab" onclick="tab('audit')">Monthly Audit</button>
+     <button id="usersTab" onclick="tab('users')">Admin / Users</button>
+     <button onclick="password()">Change Password</button>
+     <button onclick="logout()">Logout</button>
+    </div>
+    <section id="pos">
+     <div class="grid">
+      <div class="card">
+       <h2>🛒 POS</h2>
+       <div class="row">
+        <input id="customer" placeholder="Customer name"><input id="contact" placeholder="Contact"><input id="notes" placeholder="Order notes">
+       </div>
+       <div class="row">
+        <input id="pn" placeholder="Typable product name"><input id="pp" type="number" placeholder="Price"><input id="pq" type="number" value="1" placeholder="Qty">
+       </div>
+       <button onclick="typed()">➕ Add typed product</button>
+       <hr>
+       <input id="find" placeholder="Search saved products" oninput="renderProducts()">
+       <div id="products"></div>
+      </div>
+      <div class="card">
+       <h2>Current Order</h2>
+       <div id="cart"></div>
+       <div class="row">
+        <input id="disc" type="number" value="0" placeholder="Discount"><select id="method"><option>Cash</option><option>GCash</option><option>Maya</option><option>Bank Transfer</option><option>Other</option></select><input id="received" type="number" placeholder="Payment received" oninput="calc()">
+       </div>
+       <div class="total">
+        ₱<span id="total">0.00</span>
+       </div>
+       <p>Change: ₱<span id="change">0.00</span></p>
+       <button class="ok" onclick="sale()" style="width:100%">🧾 COMPLETE &amp; PRINT</button>
+       <button onclick="newOrder()" style="width:100%;margin-top:8px">➕ ADD ANOTHER ORDER</button>
+      </div>
+     </div>
+    </section>
+    <section id="inventory" class="hidden">
+     <div class="card">
+      <h2>📦 Inventory</h2>
+      <div class="row">
+       <input id="inN" placeholder="Product"><input id="inP" type="number" placeholder="Price"><input id="inS" type="number" placeholder="Opening stock">
+      </div>
+      <button onclick="addProduct()">Add Product</button>
+      <button onclick="printEl('Inventory',$('inv').innerHTML)">🖨️ Print</button>
+      <div id="inv"></div>
+      <h3>Stock IN/OUT</h3>
+      <div id="moves"></div>
+     </div>
+    </section>
+    <section id="history" class="hidden">
+     <div class="card">
+      <h2>📊 Sales History</h2>
+      <div class="row">
+       <input id="hd" type="date"><input id="hq" placeholder="Date/customer/item search">
+       <button onclick="history()">Search</button>
+      </div>
+      <button onclick="printEl('Sales History',$('hist').innerHTML)">🖨️ Print</button>
+      <div id="hist"></div>
+     </div>
+    </section>
+    <section id="daily" class="hidden">
+     <div class="card">
+      <h2>💰 Daily Sales</h2>
+      <div class="row">
+       <input id="dd" type="date">
+       <button onclick="daily()">Load</button>
+       <button onclick="printEl('Daily Sales Report',$('dailyOut').innerHTML)">🖨️ Print</button>
+      </div>
+      <div id="dailyOut"></div>
+     </div>
+    </section>
+    <section id="expenses" class="hidden">
+     <div class="card">
+      <h2>💼 Salary &amp; Expenses</h2>
+      <div class="row">
+       <input id="ed" placeholder="Description"><input id="ea" type="number" placeholder="Amount"><select id="ec"><option>Salary</option><option>Supplies</option><option>Transport</option><option>Utilities</option><option>Rent</option><option>Other</option></select>
+      </div>
+      <button onclick="expense()">Save</button>
+      <button onclick="printEl('Salary &amp; Expenses',$('ex').innerHTML)">🖨️ Print</button>
+      <div id="ex"></div>
+     </div>
+    </section>
+    <section id="money" class="hidden">
+     <div class="card">
+      <h2>💵 Cash Drawer Money Breakdown</h2>
+      <div id="den"></div>
+      <h2>Total ₱<span id="drawer">0.00</span></h2>
+      <button onclick="saveMoney()">Save</button>
+      <button onclick="printEl('Cash Drawer',$('money').innerHTML)">🖨️ Print</button>
+     </div>
+    </section>
+    <section id="audit" class="hidden">
+     <div class="card">
+      <h2>📅 Monthly Audit</h2>
+      <div class="row">
+       <input id="am" type="month">
+       <button onclick="monthly()">Load</button>
+       <button onclick="printEl('Monthly Audit',$('auditOut').innerHTML)">🖨️ Print</button>
+      </div>
+      <div id="auditOut"></div>
+     </div>
+    </section>
+    <section id="users" class="hidden">
+     <div class="card">
+      <h2>🔐 Admin / Users</h2>
+      <div class="row">
+       <input id="nu" placeholder="Username"><input id="np" type="password" placeholder="Password 8+ chars"><select id="nr"><option>cashier</option><option>admin</option></select>
+      </div>
+      <button onclick="addUser()">Add User</button>
+      <button onclick="backup()">💾 Backup</button>
+      <div id="ul"></div>
+      <h3>📝 Audit Trail</h3>
+      <div id="al"></div>
+     </div>
+    </section>
+   </div>
+  </div>
+  <script>
+const $=x=>document.getElementById(x),P=n=>Number(n||0).toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2}),esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),today=()=>new Date().toISOString().slice(0,10),fmt=x=>new Date(x).toLocaleString('en-PH');let cart=[],products=[],lastSales=[];async function api(u,o={}){let r=await fetch(u,{headers:{'Content-Type':'application/json'},...o}),d=await r.json();if(!r.ok)throw Error(d.error||'Request failed');return d}
+async function boot(){let m=await api('/api/me');if(m.user)show(m.user)}function show(u){$('login').classList.add('hidden');$('app').classList.remove('hidden');$('me').textContent=' • '+u.username+' ('+u.role+')';if(u.role!=='admin'){$('auditTab').style.display='none';$('usersTab').style.display='none'}refresh()}async function login(){try{let d=await api('/api/login',{method:'POST',body:JSON.stringify({username:$('u').value,password:$('p').value})});show(d.user);if(d.defaultAdmin)alert('Please change the default admin password.')}catch(e){$('err').textContent=e.message}}async function logout(){await api('/api/logout',{method:'POST'});location.reload()}async function refresh(){let b=await api('/api/bootstrap');products=b.products;renderProducts();renderInv();money(JSON.parse(b.money.data||'{}'))}
+function tab(id){document.querySelectorAll('section').forEach(x=>x.classList.add('hidden'));$(id).classList.remove('hidden');if(id==='history')history();if(id==='daily')daily();if(id==='expenses')expenses();if(id==='users')users();if(id==='audit')monthly();if(id==='inventory')moves()}
+function renderProducts(){let q=($('find').value||'').toLowerCase();$('products').innerHTML=products.filter(p=>p.name.toLowerCase().includes(q)).map(p=>`<div class="product"><span><b>${esc(p.name)}</b><br>₱${P(p.price)} • Stock ${p.stock}</span><input id="q${p.id}" type="number" value="1" min=".01"><button onclick="add(${p.id})">Add</button></div>`).join('')}
+function add(id){let p=products.find(x=>x.id===id),q=+$('q'+id).value;if(q>p.stock)return alert('Not enough stock');cart.push({product_id:id,name:p.name,price:p.price,qty:q});renderCart()}function typed(){let n=$('pn').value,p=+$('pp').value,q=+$('pq').value;if(!n||p<0||q<=0)return alert('Enter product, price and quantity');cart.push({product_id:null,name:n,price:p,qty:q});$('pn').value=$('pp').value='';$('pq').value=1;renderCart()}function renderCart(){$('cart').innerHTML=cart.map((x,i)=>`<div class="cart"><span>${esc(x.name)}</span><input type="number" value="${x.qty}" onchange="cart[${i}].qty=+this.value;renderCart()"><span>₱${P(x.price*x.qty)}</span><button class="danger" onclick="cart.splice(${i},1);renderCart()">×</button></div>`).join('')||'<p class="muted">No items.</p>';calc()}function calc(){let t=Math.max(0,cart.reduce((a,x)=>a+x.price*x.qty,0)-+$('disc').value);$('total').textContent=P(t);$('change').textContent=P($('method').value==='Cash'?Math.max(0,+$('received').value-t):0)}
+async function sale(){try{let d=await api('/api/sales',{method:'POST',body:JSON.stringify({items:cart,customer:$('customer').value,contact:$('contact').value,notes:$('notes').value,discount:+$('disc').value,payment:$('method').value,received:+$('received').value})});receipt(d);newOrder();refresh()}catch(e){alert(e.message)}}function newOrder(){cart=[];['customer','contact','notes','received'].forEach(x=>$(x).value='');$('disc').value=0;renderCart()}
+async function addProduct(){try{await api('/api/products',{method:'POST',body:JSON.stringify({name:$('inN').value,price:+$('inP').value,stock:+$('inS').value})});refresh()}catch(e){alert(e.message)}}function renderInv(){$('inv').innerHTML='<div class="scroll"><table><tr><th>Product</th><th>Price</th><th>Stock</th><th>Move</th></tr>'+products.map(p=>`<tr><td>${esc(p.name)}</td><td>₱${P(p.price)}</td><td>${p.stock}</td><td><input id="m${p.id}" type="number" value="1" style="width:75px"><button onclick="move(${p.id},'IN')">IN</button> <button class="danger" onclick="move(${p.id},'OUT')">OUT</button></td></tr>`).join('')+'</table></div>'}async function move(id,k){try{await api('/api/products/'+id+'/stock',{method:'POST',body:JSON.stringify({kind:k,qty:+$('m'+id).value})});refresh();moves()}catch(e){alert(e.message)}}async function moves(){let d=await api('/api/stock-moves');$('moves').innerHTML='<div class="scroll"><table><tr><th>Date</th><th>Product</th><th>Type</th><th>Qty</th><th>User</th></tr>'+d.map(x=>`<tr><td>${fmt(x.created)}</td><td>${esc(x.name)}</td><td>${x.kind}</td><td>${x.qty}</td><td>${esc(x.username||'')}</td></tr>`).join('')+'</table></div>'}
+function saleTable(a){return '<div class="scroll"><table><tr><th>Date</th><th>Receipt</th><th>Customer</th><th>Items</th><th>Payment</th><th>Total</th><th></th></tr>'+a.map(s=>`<tr><td>${fmt(s.created)}</td><td>${esc(s.receipt)}</td><td>${esc(s.customer||'Walk-in')}</td><td>${s.items.map(i=>esc(i.name)+' × '+i.qty).join('<br>')}</td><td>${s.payment}</td><td>₱${P(s.total)}</td><td><button onclick='receipt(${JSON.stringify(s)})'>Print</button></td></tr>`).join('')+'</table></div>'}async function history(){let q=new URLSearchParams();if($('hd').value)q.set('date',$('hd').value);if($('hq').value)q.set('q',$('hq').value);lastSales=await api('/api/sales?'+q);$('hist').innerHTML=saleTable(lastSales)}async function daily(){let d=await api('/api/daily?date='+($('dd').value||today()));$('dd').value=d.date;$('dailyOut').innerHTML=stats(d)+saleTable(d.sales)+'<h3>Expenses</h3>'+expenseTable(d.expenses)}async function expense(){try{await api('/api/expenses',{method:'POST',body:JSON.stringify({description:$('ed').value,amount:+$('ea').value,category:$('ec').value})});$('ed').value=$('ea').value='';expenses()}catch(e){alert(e.message)}}async function expenses(){let d=await api('/api/expenses');$('ex').innerHTML=expenseTable(d)}function expenseTable(a){return '<table><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th></tr>'+a.map(x=>`<tr><td>${fmt(x.created)}</td><td>${esc(x.description)}</td><td>${esc(x.category)}</td><td>₱${P(x.amount)}</td></tr>`).join('')+'</table>'}function stats(d){return `<div class="stats"><div class="stat">Gross Sales<b>₱${P(d.gross)}</b></div><div class="stat">Expenses<b>₱${P(d.expenseTotal)}</b></div><div class="stat">Net<b>₱${P(d.gross-d.expenseTotal)}</b></div><div class="stat">Transactions<b>${d.sales.length}</b></div></div>`}
+let den=[1000,500,200,100,50,20,10,5,1,.25,.1,.05];function money(d={}){$('den').innerHTML=den.map(x=>`<div class="row"><label>₱${x}</label><input id="d${String(x).replace('.','')}" type="number" value="${d[x]||0}" oninput="drawer()"><span></span></div>`).join('');drawer()}function drawer(){let t=den.reduce((a,x)=>a+x*(+$('d'+String(x).replace('.','')).value||0),0);$('drawer').textContent=P(t)}async function saveMoney(){let d={};den.forEach(x=>d[x]=+$('d'+String(x).replace('.','_')).value||0);await api('/api/money',{method:'POST',body:JSON.stringify({data:d})});alert('Saved')}
+async function monthly(){let d=await api('/api/monthly?month='+($('am').value||today().slice(0,7)));$('auditOut').innerHTML=stats(d)+saleTable(d.sales)+'<h3>Expenses</h3>'+expenseTable(d.expenses)}async function users(){try{let u=await api('/api/users');$('ul').innerHTML='<table><tr><th>Username</th><th>Role</th><th>Status</th><th></th></tr>'+u.map(x=>`<tr><td>${esc(x.username)}</td><td>${x.role}</td><td>${x.active?'Active':'Disabled'}</td><td>${x.active&&x.id!==1?`<button class="danger" onclick="disableUser(${x.id})">Disable</button>`:''}</td></tr>`).join('')+'</table>';let a=await api('/api/audit');$('al').innerHTML='<table><tr><th>Date</th><th>User</th><th>Action</th><th>Details</th></tr>'+a.map(x=>`<tr><td>${fmt(x.created)}</td><td>${esc(x.username||'')}</td><td>${esc(x.action)}</td><td>${esc(x.details||'')}</td></tr>`).join('')+'</table>'}catch(e){alert(e.message)}}async function addUser(){try{await api('/api/users',{method:'POST',body:JSON.stringify({username:$('nu').value,password:$('np').value,role:$('nr').value})});users()}catch(e){alert(e.message)}}async function disableUser(id){if(confirm('Disable user?')){await api('/api/users/'+id,{method:'DELETE'});users()}}async function backup(){await api('/api/backup',{method:'POST'});alert('Backup created')}async function password(){let p=prompt('New password (8+ characters)');if(p)try{await api('/api/password',{method:'POST',body:JSON.stringify({password:p})});alert('Password changed')}catch(e){alert(e.message)}}
+function receipt(s){let rows=s.items.map(i=>`<tr><td>${esc(i.name)}</td><td>${i.qty}</td><td>₱${P(i.price*i.qty)}</td></tr>`).join('');printEl('Sales Receipt',`<center><h2>RMVillasis Enterprises</h2>SALES RECEIPT</center><p>Date: ${fmt(s.created)}<br>Receipt: ${esc(s.receipt)}<br>Customer: ${esc(s.customer||'Walk-in')}</p><table><tr><th>Item</th><th>Qty</th><th>Amount</th></tr>${rows}</table><p style="text-align:right">Subtotal: ₱${P(s.subtotal)}<br>Discount: ₱${P(s.discount)}<br><b>TOTAL: ₱${P(s.total)}</b><br>Payment: ${s.payment}<br>Change: ₱${P(s.change_amt)}</p>`)}function printEl(t,b){let w=open('','_blank');if(!w)return alert('Allow pop-ups');w.document.write(<html><head><title>${esc(t)}</title><style>body{font-family:Arial;margin:25px}table{width:100%;border-collapse:collapse}th,td{padding:7px;border:1px solid #ccc;text-align:left}</style></head><body><h1>RMVillasis Enterprises</h1><h2>${esc(t)}</h2>${b}<script>onload=()=>print()<\/script></body></html>);w.document.close()}$('dd').value=today();$('am').value=today().slice(0,7);renderCart();boot();
+</script>
+ </body>
+</html>

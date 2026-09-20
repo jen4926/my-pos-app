@@ -161,5 +161,35 @@ let den=[1000,500,200,100,50,20,10,5,1,.25,.1,.05];function money(d={}){$('den')
 async function monthly(){let d=await api('/api/monthly?month='+($('am').value||today().slice(0,7)));$('auditOut').innerHTML=stats(d)+saleTable(d.sales)+'<h3>Expenses</h3>'+expenseTable(d.expenses)}async function users(){try{let u=await api('/api/users');$('ul').innerHTML='<table><tr><th>Username</th><th>Role</th><th>Status</th><th></th></tr>'+u.map(x=>`<tr><td>${esc(x.username)}</td><td>${x.role}</td><td>${x.active?'Active':'Disabled'}</td><td>${x.active&&x.id!==1?`<button class="danger" onclick="disableUser(${x.id})">Disable</button>`:''}</td></tr>`).join('')+'</table>';let a=await api('/api/audit');$('al').innerHTML='<table><tr><th>Date</th><th>User</th><th>Action</th><th>Details</th></tr>'+a.map(x=>`<tr><td>${fmt(x.created)}</td><td>${esc(x.username||'')}</td><td>${esc(x.action)}</td><td>${esc(x.details||'')}</td></tr>`).join('')+'</table>'}catch(e){alert(e.message)}}async function addUser(){try{await api('/api/users',{method:'POST',body:JSON.stringify({username:$('nu').value,password:$('np').value,role:$('nr').value})});users()}catch(e){alert(e.message)}}async function disableUser(id){if(confirm('Disable user?')){await api('/api/users/'+id,{method:'DELETE'});users()}}async function backup(){await api('/api/backup',{method:'POST'});alert('Backup created')}async function password(){let p=prompt('New password (8+ characters)');if(p)try{await api('/api/password',{method:'POST',body:JSON.stringify({password:p})});alert('Password changed')}catch(e){alert(e.message)}}
 function receipt(s){let rows=s.items.map(i=>`<tr><td>${esc(i.name)}</td><td>${i.qty}</td><td>₱${P(i.price*i.qty)}</td></tr>`).join('');printEl('Sales Receipt',`<center><h2>RMVillasis Enterprises</h2>SALES RECEIPT</center><p>Date: ${fmt(s.created)}<br>Receipt: ${esc(s.receipt)}<br>Customer: ${esc(s.customer||'Walk-in')}</p><table><tr><th>Item</th><th>Qty</th><th>Amount</th></tr>${rows}</table><p style="text-align:right">Subtotal: ₱${P(s.subtotal)}<br>Discount: ₱${P(s.discount)}<br><b>TOTAL: ₱${P(s.total)}</b><br>Payment: ${s.payment}<br>Change: ₱${P(s.change_amt)}</p>`)}function printEl(t,b){let w=open('','_blank');if(!w)return alert('Allow pop-ups');w.document.write(<html><head><title>${esc(t)}</title><style>body{font-family:Arial;margin:25px}table{width:100%;border-collapse:collapse}th,td{padding:7px;border:1px solid #ccc;text-align:left}</style></head><body><h1>RMVillasis Enterprises</h1><h2>${esc(t)}</h2>${b}<script>onload=()=>print()<\/script></body></html>);w.document.close()}$('dd').value=today();$('am').value=today().slice(0,7);renderCart();boot();
 </script>
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Hanapin ang form o login button
+    const loginBtn = document.querySelector('button') || document.querySelector('input[type="submit"]');
+    
+    if (loginBtn) {
+      loginBtn.addEventListener('click', function(e) {
+        e.preventDefault(); // Iwasan ang pag-refresh ng page
+        
+        // Kunin ang input fields
+        const inputs = document.querySelectorAll('input');
+        let username = "";
+        let password = "";
+
+        inputs.forEach(input => {
+          if (input.type === "text" || input.name === "username") username = input.value;
+          if (input.type === "password" || input.name === "password") password = input.value;
+        });
+
+        // I-check ang credentials
+        if (username === "admin" && password === "admin123") {
+          alert("Login Successful! Welcome to RMVillasis Enterprises POS.");
+          // Dito pwedeng ilagay ang redirection kung may Dashboard page ka:
+          // window.location.href = "dashboard.html";
+        } else {
+          alert("Maling Username o Password! Gumamit ng admin / admin123");
+        }
+      });
+    }
+  });
  </body>
 </html>

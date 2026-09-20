@@ -22,7 +22,7 @@
         <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-y-auto">
             <header class="bg-white shadow px-6 py-4 flex justify-between items-center">
-                <h1 id="page-title" class="text-xl font-semibold text-gray-850">POS Entry</h1>
+                <h1 id="page-title" class="text-xl font-semibold text-gray-800">POS Entry</h1>
                 <span class="text-sm text-gray-500">Admin Mode</span>
             </header>
 
@@ -94,7 +94,6 @@
 
     <script>
         let products = JSON.parse(localStorage.getItem('pos_products')) || [
-            let products = JSON.parse(localStorage.getItem('pos_products')) || [
             { id: 1, name: 'Kape (Hot)', price: 45, stock: 50 },
             { id: 2, name: 'Bottled Water', price: 20, stock: 100 },
             { id: 3, name: 'Tinapay', price: 15, stock: 30 }

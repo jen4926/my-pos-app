@@ -18,13 +18,6 @@
     .col-action { width: 45px; text-align: center; vertical-align: middle; }
     .inventory-input { width: 95px; text-align: center; }
     .stat-card { border-left: 4px solid #1976d2; }
-   
-    /* Login Backdrop overlay */
-    #loginOverlay {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(13, 71, 161, 0.85); z-index: 9999;
-      display: flex; justify-content: center; align-items: center;
-    }
 
     /* PRINT STYLES */
     @media print {
@@ -33,7 +26,7 @@
         color: #000 !important;
         font-size: 12pt;
       }
-      .navbar, #loginOverlay, .btn, .nav, .modal, .no-print {
+      .navbar, .btn, .nav, .modal, .no-print {
         display: none !important;
       }
       .card {
@@ -54,31 +47,6 @@
   </style>
 </head>
 <body>
-
-  <!-- ================= 0. LOGIN OVERLAY ================= -->
-  <div id="loginOverlay">
-    <div class="card p-4 shadow-lg" style="width: 380px; border-top: 5px solid #1976d2;">
-      <div class="text-center mb-3">
-        <i class="fa-solid fa-store fa-3x text-primary mb-2"></i>
-        <h4 class="fw-bold">RMVillasis Enterprises</h4>
-        <p class="text-muted small">Mangyaring mag-log in upang magpatuloy</p>
-      </div>
-      <form id="loginForm">
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Username:</label>
-          <input type="text" id="loginUsername" class="form-control" placeholder="e.g. admin" required>
-        </div>
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Password:</label>
-          <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
-        </div>
-        <div id="loginError" class="alert alert-danger p-2 small d-none">
-          Mali ang username o password!
-        </div>
-        <button type="submit" class="btn btn-primary w-100 fw-bold py-2"><i class="fa-solid fa-right-to-bracket me-2"></i>Log In</button>
-      </form>
-    </div>
-  </div>
 
   <!-- Navbar -->
   <nav class="navbar navbar-dark expand-lg mb-4">
@@ -122,14 +90,14 @@
             <i class="fa-solid fa-user-tie me-1"></i> D/Eco Boss
           </button>
         </li>
-        <li class="nav-item admin-only">
+        <li class="nav-item">
           <button class="nav-link" id="audit-tab" data-bs-toggle="pill" data-bs-target="#audit-content" type="button" onclick="generateMonthlyAudit()">
             <i class="fa-solid fa-chart-pie me-1"></i> Monthly Audit
           </button>
         </li>
       </ul>
 
-      <!-- User Profile, Save, Refresh Button & Account Controls -->
+      <!-- Save & Refresh Button -->
       <div class="d-flex align-items-center gap-2">
         <button class="btn btn-success btn-sm fw-semibold" onclick="manualSaveData()" title="Save Data to Local Storage">
           <i class="fa-solid fa-floppy-disk me-1"></i> Save Data
@@ -137,17 +105,6 @@
         <button class="btn btn-outline-light btn-sm fw-semibold" onclick="location.reload()" title="Refresh Page">
           <i class="fa-solid fa-rotate me-1"></i> Refresh
         </button>
-        <div class="dropdown text-end text-white">
-          <a href="#" class="d-block link-light text-decoration-none dropdown-toggle fw-bold" id="userDropdown" data-bs-toggle="dropdown">
-            <i class="fa-solid fa-circle-user fa-lg me-1"></i> <span id="currentUserName">User</span>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end text-small shadow">
-            <li><a class="dropdown-item" href="#" onclick="openChangeProfileModal()"><i class="fa-solid fa-key me-2"></i>Change Name / Password</a></li>
-            <li class="admin-only"><a class="dropdown-item" href="#" onclick="openUserManagementModal()"><i class="fa-solid fa-users-gear me-2"></i>Manage Users & Admins</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-danger fw-bold" href="#" onclick="logout()"><i class="fa-solid fa-right-from-bracket me-2">Tag Out</i></a></li>
-          </ul>
-        </div>
       </div>
     </div>
   </nav>
@@ -1401,86 +1358,6 @@
     </div>
   </div>
 
-  <!-- MODAL: CHANGE PROFILE -->
-  <div class="modal fade" id="changeProfileModal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header bg-primary text-white">
-          <h5 class="modal-title"><i class="fa-solid fa-id-card me-2"></i>Edit My Profile</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <form id="changeProfileForm">
-          <div class="modal-body">
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Display Name:</label>
-              <input type="text" id="profDisplayName" class="form-control" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">New Password:</label>
-              <input type="password" id="profPassword" class="form-control" placeholder="Iwanang blangko kung ayaw palitan">
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-success"><i class="fa-solid fa-floppy-disk me-1"></i>Save Changes</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: USER MANAGEMENT -->
-  <div class="modal fade" id="userManagementModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header bg-dark text-white">
-          <h5 class="modal-title"><i class="fa-solid fa-users-gear me-2"></i>User & Admin Accounts Management</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <h6 class="fw-bold mb-3 text-primary"><i class="fa-solid fa-user-plus me-1"></i>Add New System User / Admin</h6>
-          <form id="newUserForm" class="row g-2 mb-4 bg-light p-3 border rounded">
-            <div class="col-md-3">
-              <input type="text" id="newAccName" class="form-control form-control-sm" placeholder="Full Name" required>
-            </div>
-            <div class="col-md-3">
-              <input type="text" id="newAccUser" class="form-control form-control-sm" placeholder="Username" required>
-            </div>
-            <div class="col-md-3">
-              <input type="password" id="newAccPass" class="form-control form-control-sm" placeholder="Password" required>
-            </div>
-            <div class="col-md-2">
-              <select id="newAccRole" class="form-select form-select-sm">
-                <option value="Staff">Staff</option>
-                <option value="Admin">Admin</option>
-              </select>
-            </div>
-            <div class="col-md-1">
-              <button type="submit" class="btn btn-sm btn-success w-100"><i class="fa-solid fa-plus"></i></button>
-            </div>
-          </form>
-
-          <h6 class="fw-bold mb-2"><i class="fa-solid fa-users me-1"></i>Existing System Users</h6>
-          <div class="table-responsive">
-            <table class="table table-bordered align-middle table-sm">
-              <thead class="table-light">
-                <tr>
-                  <th>Name</th>
-                  <th>Username</th>
-                  <th>Role</th>
-                  <th class="text-center">Action</th>
-                </tr>
-              </thead>
-              <tbody id="userListBody">
-                <!-- User rows rendered dynamically -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Modal para sa D/Eco Boss Adjustment -->
   <div class="modal fade" id="bossModal" tabindex="-1">
     <div class="modal-dialog">
@@ -1514,46 +1391,6 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             <button type="submit" class="btn btn-dark"><i class="fa-solid fa-floppy-disk me-1"></i>Save Adjustment</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: EDIT D/ECO BOSS ADJUSTMENT -->
-  <div class="modal fade" id="editBossModal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header bg-warning">
-          <h5 class="modal-title fw-bold text-dark"><i class="fa-solid fa-pen-to-square me-2"></i>Edit D/Eco Boss Adjustment</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <form id="editBossForm">
-          <div class="modal-body">
-            <input type="hidden" id="editBossIndex">
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Date:</label>
-              <input type="date" id="editBossDate" class="form-control" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Adjustment Type:</label>
-              <select id="editBossType" class="form-select">
-                <option value="ADD">Boss Addition / Capital Cash In (+ Subtotal Net)</option>
-                <option value="SUB">Boss Withdrawal / Cash Out (- Subtotal Net)</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Amount (₱):</label>
-              <input type="number" step="0.01" id="editBossAmount" class="form-control" placeholder="0.00" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Notes / Description:</label>
-              <input type="text" id="editBossNotes" class="form-control" placeholder="e.g., Personal Withdrawal, Additional Capital">
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-dark"><i class="fa-solid fa-floppy-disk me-1"></i>Update Adjustment</button>
           </div>
         </form>
       </div>
@@ -1651,21 +1488,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // System Users Database
-    let defaultUsers = [
-      { id: 1, name: "System Administrator", username: "admin", password: "password", role: "Admin" },
-      { id: 2, name: "Juan Cashier", username: "cashier", password: "password", role: "Staff" }
-    ];
-
-    let users = JSON.parse(localStorage.getItem('rmv_users'));
-    if (!users || !users.some(u => u.username === 'admin')) {
-      users = defaultUsers;
-      localStorage.setItem('rmv_users', JSON.stringify(users));
-    }
-
-    let currentUser = JSON.parse(localStorage.getItem('rmv_current_user')) || null;
-
-    // DEFAULT / SAVED TRANSACTIONS
     let transactions = JSON.parse(localStorage.getItem('rmv_transactions'));
     if (!transactions) {
       const defaultToday = getTodayDateString();
@@ -1759,16 +1581,6 @@
 
     window.onload = function() {
       addPosRow();
-     
-      if (currentUser) {
-        document.getElementById('loginOverlay').style.display = 'none';
-        document.getElementById('currentUserName').innerText = `${currentUser.name} (${currentUser.role})`;
-        const adminElements = document.querySelectorAll('.admin-only');
-        adminElements.forEach(el => {
-          el.style.display = currentUser.role === 'Admin' ? 'block' : 'none';
-        });
-      }
-
       loadMoneyBreakdown();
       generateDailyReport();
       renderCreditTable();
@@ -1791,12 +1603,6 @@
       localStorage.setItem('rmv_monthlyExpensesData', JSON.stringify(monthlyExpensesData));
       localStorage.setItem('rmv_cashBreakdownData', JSON.stringify(cashBreakdownData));
       localStorage.setItem('rmv_standalonePayments', JSON.stringify(standalonePayments));
-      localStorage.setItem('rmv_users', JSON.stringify(users));
-      if (currentUser) {
-        localStorage.setItem('rmv_current_user', JSON.stringify(currentUser));
-      } else {
-        localStorage.removeItem('rmv_current_user');
-      }
     }
 
     function manualSaveData() {
@@ -1813,103 +1619,6 @@
           inputs[currentIndex + 1].focus();
           inputs[currentIndex + 1].select();
         }
-      }
-    }
-
-    // ================= AUTHENTICATION LOGIC =================
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const u = document.getElementById('loginUsername').value.trim();
-      const p = document.getElementById('loginPassword').value.trim();
-      const found = users.find(user => user.username === u && user.password === p);
-
-      if (found) {
-        currentUser = found;
-        saveData();
-        document.getElementById('loginOverlay').style.display = 'none';
-        document.getElementById('loginError').classList.add('d-none');
-        document.getElementById('currentUserName').innerText = `${currentUser.name} (${currentUser.role})`;
-       
-        const adminElements = document.querySelectorAll('.admin-only');
-        adminElements.forEach(el => {
-          el.style.display = currentUser.role === 'Admin' ? 'block' : 'none';
-        });
-
-        this.reset();
-      } else {
-        document.getElementById('loginError').classList.remove('d-none');
-      }
-    });
-
-    function logout() {
-      currentUser = null;
-      localStorage.removeItem('rmv_current_user');
-      document.getElementById('loginOverlay').style.display = 'flex';
-    }
-
-    function openChangeProfileModal() {
-      if(!currentUser) return;
-      document.getElementById('profDisplayName').value = currentUser.name;
-      document.getElementById('profPassword').value = '';
-      new bootstrap.Modal(document.getElementById('changeProfileModal')).show();
-    }
-
-    document.getElementById('changeProfileForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      currentUser.name = document.getElementById('profDisplayName').value;
-      const newPass = document.getElementById('profPassword').value;
-      if(newPass) currentUser.password = newPass;
-
-      const uIndex = users.findIndex(u => u.id === currentUser.id);
-      if(uIndex > -1) users[uIndex] = currentUser;
-
-      saveData();
-      document.getElementById('currentUserName').innerText = `${currentUser.name} (${currentUser.role})`;
-      alert('Profile successfully updated!');
-      bootstrap.Modal.getInstance(document.getElementById('changeProfileModal')).hide();
-    });
-
-    function openUserManagementModal() {
-      renderUserList();
-      new bootstrap.Modal(document.getElementById('userManagementModal')).show();
-    }
-
-    function renderUserList() {
-      const tbody = document.getElementById('userListBody');
-      tbody.innerHTML = '';
-      users.forEach((u, index) => {
-        tbody.innerHTML += `
-          <tr>
-            <td>${u.name}</td>
-            <td><code>${u.username}</code></td>
-            <td><span class="badge ${u.role === 'Admin' ? 'bg-danger' : 'bg-secondary'}">${u.role}</span></td>
-            <td class="text-center">
-              ${u.id !== 1 ? `<button class="btn btn-sm btn-outline-danger border-0 p-0" onclick="deleteUser(${index})"><i class="fa-solid fa-trash"></i></button>` : `<small class="text-muted">Master</small>`}
-            </td>
-          </tr>
-        `;
-      });
-    }
-
-    document.getElementById('newUserForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      users.push({
-        id: Date.now(),
-        name: document.getElementById('newAccName').value,
-        username: document.getElementById('newAccUser').value,
-        password: document.getElementById('newAccPass').value,
-        role: document.getElementById('newAccRole').value
-      });
-      saveData();
-      this.reset();
-      renderUserList();
-    });
-
-    function deleteUser(index) {
-      if(confirm('Sigurado ka bang gusto mong alisin ang user na ito?')) {
-        users.splice(index, 1);
-        saveData();
-        renderUserList();
       }
     }
 
@@ -1950,26 +1659,17 @@
       const isInventoryOnly = document.getElementById('inventoryOnlyMode').checked;
       const tbody = document.getElementById('posItemsBody');
       const rowId = Date.now() + Math.random().toString(36).substring(2, 5);
-     
       const displayStyle = isInventoryOnly ? 'style="display: none;"' : '';
 
       const rowHTML = `
         <tr id="row-${rowId}">
-          <td>
-            <input type="text" class="form-control form-control-sm pos-name" placeholder="Pangalan ng Produkto" required>
-          </td>
-          <td>
-            <input type="text" class="form-control form-control-sm pos-desc" placeholder="Description / Specification">
-          </td>
+          <td><input type="text" class="form-control form-control-sm pos-name" placeholder="Pangalan ng Produkto" required></td>
+          <td><input type="text" class="form-control form-control-sm pos-desc" placeholder="Description"></td>
           <td><input type="number" step="any" min="0.5" class="form-control form-control-sm pos-qty" value="1" oninput="calculateTotal()" required></td>
           <td ${displayStyle}><input type="number" step="0.01" class="form-control form-control-sm pos-cost" placeholder="0.00" oninput="calculateTotal()" ${isInventoryOnly ? '' : 'required'}></td>
           <td ${displayStyle}><input type="number" step="0.01" class="form-control form-control-sm pos-price" placeholder="0.00" oninput="calculateTotal()" ${isInventoryOnly ? '' : 'required'}></td>
           <td ${displayStyle}><input type="number" step="0.01" class="form-control form-control-sm bg-light pos-subtotal" placeholder="0.00" readonly></td>
-          <td class="col-action no-print">
-            <button type="button" class="btn btn-sm btn-outline-danger border-0 p-1" onclick="removePosRow('row-${rowId}')">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
-          </td>
+          <td class="col-action no-print"><button type="button" class="btn btn-sm btn-outline-danger border-0 p-1" onclick="removePosRow('row-${rowId}')"><i class="fa-solid fa-trash-can"></i></button></td>
         </tr>
       `;
       tbody.insertAdjacentHTML('beforeend', rowHTML);
@@ -2039,9 +1739,7 @@
         document.getElementById('amountPaidNow').value = document.getElementById('totalAmount').value;
       } else {
         creditSection.style.display = 'block';
-        if (paymentType === 'CREDIT') {
-          document.getElementById('amountPaidNow').value = '0.00';
-        }
+        if (paymentType === 'CREDIT') document.getElementById('amountPaidNow').value = '0.00';
       }
       calculateBalance();
     }
@@ -2061,16 +1759,11 @@
     document.getElementById('posForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const isInventoryOnly = document.getElementById('inventoryOnlyMode').checked;
-
       const saleDate = document.getElementById('saleDate').value;
       const custName = document.getElementById('customerName').value;
       const location = document.getElementById('transactionLocation').value;
 
-      let total = 0;
-      let paid = 0;
-      let balance = 0;
-      let status = "PAID";
-      let method = "Inventory Update";
+      let total = 0, paid = 0, balance = 0, status = "PAID", method = "Inventory Update";
 
       if (!isInventoryOnly) {
         total = parseFloat(document.getElementById('totalAmount').value) || 0;
@@ -2087,9 +1780,7 @@
       }
 
       const itemRows = document.querySelectorAll('#posItemsBody tr');
-      let productSummary = [];
-      let itemsPurchasedList = [];
-      let totalCostOfGoods = 0;
+      let productSummary = [], itemsPurchasedList = [], totalCostOfGoods = 0;
 
       itemRows.forEach(row => {
         const name = row.querySelector('.pos-name').value.trim();
@@ -2100,40 +1791,15 @@
 
         totalCostOfGoods += (qty * cost);
         if(name) {
-          let itemString = desc ? `${name} (${desc}) (x${qty})` : `${name} (x${qty})`;
-          productSummary.push(itemString);
-          itemsPurchasedList.push({
-            name: name,
-            desc: desc,
-            qty: qty,
-            cost: cost,
-            price: price,
-            subtotal: qty * price,
-            location: location,
-            date: saleDate,
-            customer: custName
-          });
+          productSummary.push(desc ? `${name} (${desc}) (x${qty})` : `${name} (x${qty})`);
+          itemsPurchasedList.push({ name, desc, qty, cost, price, subtotal: qty * price, location, date: saleDate, customer: custName });
 
           const invItem = inventory.find(inv => inv.name.toLowerCase() === name.toLowerCase());
           if(invItem) {
-            if (isInventoryOnly) {
-              invItem.ending += qty;
-              invItem.stockIn += qty;
-            } else {
-              invItem.ending = Math.max(0, invItem.ending - qty);
-            }
+            if (isInventoryOnly) { invItem.ending += qty; invItem.stockIn += qty; }
+            else { invItem.ending = Math.max(0, invItem.ending - qty); }
           } else {
-            const lowerN = name.toLowerCase();
-            const cat = (lowerN.includes('palm') || lowerN.includes('coco')) ? 'palmcoco' : 'dedicated';
-            inventory.push({
-              name: name,
-              cost: cost,
-              price: price,
-              beginning: isInventoryOnly ? qty : 0,
-              stockIn: isInventoryOnly ? qty : 0,
-              ending: qty,
-              category: cat
-            });
+            inventory.push({ name, cost, price, beginning: isInventoryOnly ? qty : 0, stockIn: isInventoryOnly ? qty : 0, ending: qty, category: (name.toLowerCase().includes('palm') || name.toLowerCase().includes('coco')) ? 'palmcoco' : 'dedicated' });
           }
         }
       });
@@ -2143,35 +1809,26 @@
         const cStatus = document.getElementById('containerStatus').value;
         const cQty = parseFloat(document.getElementById('containerQty').value) || 0;
         const cRate = parseFloat(document.getElementById('containerDepositRate').value) || 0;
-
-        if (cStatus === 'HIRAM') {
-          cInfo = `Hiram (${cQty} pcs)`;
-        } else if (cStatus === 'DEPOSIT') {
-          cInfo = `May Deposito (${cQty} pcs - ₱${(cQty * cRate).toFixed(2)})`;
-        }
-      }
-
-      const paymentHistory = [];
-      if (paid > 0) {
-        paymentHistory.push({ amount: paid, method: method, date: saleDate });
+        if (cStatus === 'HIRAM') cInfo = `Hiram (${cQty} pcs)`;
+        else if (cStatus === 'DEPOSIT') cInfo = `May Deposito (${cQty} pcs - ₱${(cQty * cRate).toFixed(2)})`;
       }
 
       transactions.push({
         id: Date.now(),
         date: saleDate,
         customer: custName,
-        location: location,
+        location,
         product: productSummary.join(', '),
         itemsList: itemsPurchasedList,
         containerInfo: cInfo,
-        total: total,
+        total,
         totalCost: totalCostOfGoods,
         netProfit: total - totalCostOfGoods,
-        paid: paid,
-        balance: balance,
+        paid,
+        balance,
         dueDate: isInventoryOnly ? 'N/A' : (document.getElementById('dueDate').value || 'N/A'),
-        status: status,
-        payments: paymentHistory
+        status,
+        payments: paid > 0 ? [{ amount: paid, method, date: saleDate }] : []
       });
 
       saveData();
@@ -2203,27 +1860,11 @@
         existing.stockIn += qty;
         existing.ending += qty;
       } else {
-        const lowerN = name.toLowerCase();
-        const cat = (lowerN.includes('palm') || lowerN.includes('coco')) ? 'palmcoco' : 'dedicated';
-        inventory.push({
-          name: name,
-          cost: cost,
-          price: price,
-          beginning: qty,
-          stockIn: 0,
-          ending: qty,
-          category: cat
-        });
+        inventory.push({ name, cost, price, beginning: qty, stockIn: 0, ending: qty, category: (name.toLowerCase().includes('palm') || name.toLowerCase().includes('coco')) ? 'palmcoco' : 'dedicated' });
       }
 
       if(qty > 0) {
-        stockInHistory.push({
-          date: prodDate,
-          product: name,
-          qty: qty,
-          supplier: supplier,
-          note: existing ? 'Nagdagdag ng Stock' : 'Bagong Produkto'
-        });
+        stockInHistory.push({ date: prodDate, product: name, qty, supplier, note: existing ? 'Nagdagdag ng Stock' : 'Bagong Produkto' });
       }
 
       saveData();
@@ -2242,39 +1883,15 @@
       const rDate = document.getElementById('returnDate').value || getTodayDateString();
       const rName = document.getElementById('returnProductName').value.trim();
       const rQty = parseFloat(document.getElementById('returnQty').value) || 0;
-      const rType = document.getElementById('returnType').value;
-      const rNotes = document.getElementById('returnNotes').value.trim();
-
-      if (rQty <= 0) {
-        alert('Ilagay ang tamang quantity.');
-        return;
-      }
 
       let invItem = inventory.find(i => i.name.toLowerCase() === rName.toLowerCase());
       if (invItem) {
         invItem.ending += rQty;
       } else {
-        const lowerN = rName.toLowerCase();
-        const cat = (lowerN.includes('palm') || lowerN.includes('coco')) ? 'palmcoco' : 'dedicated';
-        inventory.push({
-          name: rName,
-          cost: 0,
-          price: 0,
-          beginning: 0,
-          stockIn: rQty,
-          ending: rQty,
-          category: cat
-        });
+        inventory.push({ name: rName, cost: 0, price: 0, beginning: 0, stockIn: rQty, ending: rQty, category: 'dedicated' });
       }
 
-      returnHistory.push({
-        date: rDate,
-        product: rName,
-        qty: rQty,
-        type: rType,
-        notes: rNotes
-      });
-
+      returnHistory.push({ date: rDate, product: rName, qty: rQty, type: document.getElementById('returnType').value, notes: document.getElementById('returnNotes').value.trim() });
       saveData();
       bootstrap.Modal.getInstance(document.getElementById('returnModal')).hide();
       this.reset();
@@ -2292,13 +1909,9 @@
       palmCocoTbody.innerHTML = '';
       dedicatedTbody.innerHTML = '';
 
-      let totalCostVal = 0;
-      let totalInventoryValue = 0;
-
+      let totalCostVal = 0, totalInventoryValue = 0;
       inventory.forEach((item, index) => {
-        let sold = (item.beginning + item.stockIn) - item.ending;
-        if (sold < 0) sold = 0;
-
+        let sold = Math.max(0, (item.beginning + item.stockIn) - item.ending);
         totalCostVal += (item.ending * item.cost);
         totalInventoryValue += (item.ending * item.price);
 
@@ -2311,25 +1924,14 @@
             <td class="text-center text-success fw-bold">+${item.stockIn}</td>
             <td class="text-center text-danger">${sold}</td>
             <td><input type="number" step="any" class="form-control form-control-sm text-center fw-bold text-primary inventory-input mx-auto" value="${item.ending}" onchange="updateInventoryItem(${index}, 'ending', this.value)"></td>
-            <td class="text-center no-print">
-              <button class="btn btn-sm btn-outline-danger border-0 p-1" onclick="deleteInventoryItem(${index})"><i class="fa-solid fa-trash-can"></i></button>
-            </td>
+            <td class="text-center no-print"><button class="btn btn-sm btn-outline-danger border-0 p-1" onclick="deleteInventoryItem(${index})"><i class="fa-solid fa-trash-can"></i></button></td>
           </tr>
         `;
-
-        if (item.category === 'palmcoco') {
-          palmCocoTbody.insertAdjacentHTML('beforeend', rowHTML);
-        } else {
-          dedicatedTbody.insertAdjacentHTML('beforeend', rowHTML);
-        }
+        if (item.category === 'palmcoco') palmCocoTbody.insertAdjacentHTML('beforeend', rowHTML);
+        else dedicatedTbody.insertAdjacentHTML('beforeend', rowHTML);
       });
 
-      tfoot.innerHTML = `
-        <tr>
-          <td colspan="6" class="text-end">Total Inventory Valuation:</td>
-          <td colspan="2" class="text-start text-primary">₱${totalCostVal.toFixed(2)} (Cost) / ₱${totalInventoryValue.toFixed(2)} (SRP)</td>
-        </tr>
-      `;
+      tfoot.innerHTML = `<tr><td colspan="6" class="text-end">Total Inventory Valuation:</td><td colspan="2" class="text-start text-primary">₱${totalCostVal.toFixed(2)} (Cost) / ₱${totalInventoryValue.toFixed(2)} (SRP)</td></tr>`;
       renderCustomerSalesLog();
       renderDailyInventorySheet();
     }
@@ -2337,8 +1939,7 @@
     function updateInventoryItem(index, field, value) {
       if (field === 'name') {
         inventory[index].name = value.trim();
-        const lowerN = inventory[index].name.toLowerCase();
-        inventory[index].category = (lowerN.includes('palm') || lowerN.includes('coco')) ? 'palmcoco' : 'dedicated';
+        inventory[index].category = (value.toLowerCase().includes('palm') || value.toLowerCase().includes('coco')) ? 'palmcoco' : 'dedicated';
       } else {
         inventory[index][field] = parseFloat(value) || 0;
       }
@@ -2347,7 +1948,7 @@
     }
 
     function deleteInventoryItem(index) {
-      if (confirm('Sigurado ka bang gusto mong tanggalin ito?')) {
+      if (confirm('Sigurado ka bang tanggalin ito?')) {
         inventory.splice(index, 1);
         saveData();
         renderInventoryTables();
@@ -2358,23 +1959,10 @@
       const tbody = document.getElementById('stockInHistoryBody');
       const searchQuery = document.getElementById('searchStockInInput') ? document.getElementById('searchStockInInput').value.toLowerCase() : '';
       tbody.innerHTML = '';
-
-      const filtered = stockInHistory.filter(item =>
-        item.product.toLowerCase().includes(searchQuery) || item.date.includes(searchQuery) || (item.supplier && item.supplier.toLowerCase().includes(searchQuery))
-      );
-
-      filtered.slice().reverse().forEach(item => {
-        tbody.innerHTML += `
-          <tr>
-            <td>${item.date}</td>
-            <td class="fw-bold">${item.product}</td>
-            <td class="text-center text-success fw-bold">+${item.qty}</td>
-            <td><span class="badge bg-secondary">${item.supplier || 'N/A'}</span></td>
-            <td><span class="badge bg-info text-dark">${item.note}</span></td>
-          </tr>
-        `;
+      stockInHistory.slice().reverse().forEach(item => {
+        if (searchQuery && !`${item.product} ${item.date} ${item.supplier}`.toLowerCase().includes(searchQuery)) return;
+        tbody.innerHTML += `<tr><td>${item.date}</td><td class="fw-bold">${item.product}</td><td class="text-center text-success fw-bold">+${item.qty}</td><td><span class="badge bg-secondary">${item.supplier || 'N/A'}</span></td><td><span class="badge bg-info text-dark">${item.note}</span></td></tr>`;
       });
-      if(filtered.length === 0) tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-3">Walang nakitang tala.</td></tr>`;
     }
 
     function renderCustomerSalesLog() {
@@ -2383,36 +1971,13 @@
       tbody.innerHTML = '';
       let logs = [];
       transactions.forEach(t => {
-        if (t.itemsList && t.itemsList.length > 0) {
-          t.itemsList.forEach(item => {
-            logs.push({
-              date: t.date,
-              customer: t.customer,
-              location: t.location,
-              product: item.name + (item.desc ? ` (${item.desc})` : ''),
-              qty: item.qty,
-              cost: item.cost,
-              price: item.price,
-              total: item.subtotal
-            });
-          });
+        if (t.itemsList) {
+          t.itemsList.forEach(item => logs.push({ date: t.date, customer: t.customer, location: t.location, product: item.name + (item.desc ? ` (${item.desc})` : ''), qty: item.qty, cost: item.cost, price: item.price, total: item.subtotal }));
         }
       });
       logs.slice().reverse().forEach(log => {
-        tbody.innerHTML += `
-          <tr>
-            <td>${log.date}</td>
-            <td class="fw-bold">${log.customer}</td>
-            <td><span class="badge bg-secondary">${log.location}</span></td>
-            <td>${log.product}</td>
-            <td class="text-center">${log.qty}</td>
-            <td class="text-end">₱${log.cost.toFixed(2)}</td>
-            <td class="text-end">₱${log.price.toFixed(2)}</td>
-            <td class="text-end fw-bold text-success">₱${log.total.toFixed(2)}</td>
-          </tr>
-        `;
+        tbody.innerHTML += `<tr><td>${log.date}</td><td class="fw-bold">${log.customer}</td><td><span class="badge bg-secondary">${log.location}</span></td><td>${log.product}</td><td class="text-center">${log.qty}</td><td class="text-end">₱${log.cost.toFixed(2)}</td><td class="text-end">₱${log.price.toFixed(2)}</td><td class="text-end fw-bold text-success">₱${log.total.toFixed(2)}</td></tr>`;
       });
-      if (logs.length === 0) tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-3">Wala pang naitalang benta.</td></tr>`;
     }
 
     function renderDailyInventorySheet() {
@@ -2424,37 +1989,19 @@
       dedicatedBody.innerHTML = '';
 
       inventory.forEach(item => {
-        let soldToday = 0;
-        let stockInToday = 0;
-        let returnToday = 0;
-
+        let soldToday = 0, stockInToday = 0, returnToday = 0;
         transactions.forEach(t => {
           if (t.date === selectedDate && t.itemsList) {
-            t.itemsList.forEach(i => {
-              if (i.name.toLowerCase() === item.name.toLowerCase()) soldToday += i.qty;
-            });
+            t.itemsList.forEach(i => { if (i.name.toLowerCase() === item.name.toLowerCase()) soldToday += i.qty; });
           }
         });
-        stockInHistory.forEach(s => {
-          if (s.date === selectedDate && s.product.toLowerCase() === item.name.toLowerCase()) stockInToday += s.qty;
-        });
-        returnHistory.forEach(r => {
-          if (r.date === selectedDate && r.product.toLowerCase() === item.name.toLowerCase()) returnToday += r.qty;
-        });
+        stockInHistory.forEach(s => { if (s.date === selectedDate && s.product.toLowerCase() === item.name.toLowerCase()) stockInToday += s.qty; });
+        returnHistory.forEach(r => { if (r.date === selectedDate && r.product.toLowerCase() === item.name.toLowerCase()) returnToday += r.qty; });
 
         let endingToday = Math.max(0, item.ending);
         let beginningToday = Math.max(0, endingToday + soldToday - stockInToday - returnToday);
 
-        const rowHTML = `
-          <tr>
-            <td class="fw-bold">${item.name}</td>
-            <td class="text-center fw-semibold text-secondary">${beginningToday}</td>
-            <td class="text-center text-success fw-bold">+${stockInToday}</td>
-            <td class="text-center text-info fw-bold">+${returnToday}</td>
-            <td class="text-center text-danger fw-bold">-${soldToday}</td>
-            <td class="text-center fw-bold text-success table-success fs-6">${endingToday}</td>
-          </tr>
-        `;
+        const rowHTML = `<tr><td class="fw-bold">${item.name}</td><td class="text-center fw-semibold text-secondary">${beginningToday}</td><td class="text-center text-success fw-bold">+${stockInToday}</td><td class="text-center text-info fw-bold">+${returnToday}</td><td class="text-center text-danger fw-bold">-${soldToday}</td><td class="text-center fw-bold text-success table-success fs-6">${endingToday}</td></tr>`;
         if (item.category === 'palmcoco') palmCocoBody.insertAdjacentHTML('beforeend', rowHTML);
         else dedicatedBody.insertAdjacentHTML('beforeend', rowHTML);
       });
@@ -2490,16 +2037,7 @@
         if (searchQuery && !`${p.date} ${p.customer} ${p.method}`.toLowerCase().includes(searchQuery)) return;
         countVisible++;
         totalPaidSum += p.amount;
-        tbody.innerHTML += `
-          <tr>
-            <td>${p.date}</td>
-            <td class="fw-bold">${p.customer}</td>
-            <td><span class="badge bg-secondary">${p.method}</span></td>
-            <td class="text-end text-success fw-bold">₱${p.amount.toFixed(2)}</td>
-            <td>${p.notes}</td>
-            <td class="text-center no-print"><button class="btn btn-sm btn-outline-danger border-0 p-1" onclick="deleteStandalonePayment(${index})"><i class="fa-solid fa-trash-can"></i></button></td>
-          </tr>
-        `;
+        tbody.innerHTML += `<tr><td>${p.date}</td><td class="fw-bold">${p.customer}</td><td><span class="badge bg-secondary">${p.method}</span></td><td class="text-end text-success fw-bold">₱${p.amount.toFixed(2)}</td><td>${p.notes}</td><td class="text-center no-print"><button class="btn btn-sm btn-outline-danger border-0 p-1" onclick="deleteStandalonePayment(${index})"><i class="fa-solid fa-trash-can"></i></button></td></tr>`;
       });
       if (countVisible === 0) {
         tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-3">Wala pang nakitang manual payment.</td></tr>`;
@@ -2649,6 +2187,15 @@
       }
     }
 
+    function deleteBossAdjustment(index) {
+      if (confirm('Sigurado ka bang tanggalin ito?')) {
+        bossAdjustments.splice(index, 1);
+        saveData();
+        generateMonthlyAudit();
+        renderStandaloneBossLedger();
+      }
+    }
+
     // ================= DAILY REPORT & AUDIT =================
     let currentTargetCashInDrawer = 0;
     function generateDailyReport() {
@@ -2657,7 +2204,7 @@
       tbody.innerHTML = '';
 
       let daySales = 0, dayHiwaySales = 0, dayByaheSales = 0, dayHiwayGrossProfit = 0, dayByaheGrossProfit = 0;
-      let dayCollected = 0, dayGrossProfit = 0, count = 0;
+      let dayCollected = 0, count = 0;
       let totalByaheCash = 0, totalGCash = 0, totalBT = 0, totalCheque = 0;
       let dayDebtPayments = 0, dayRemainingBalance = 0;
 
@@ -2669,7 +2216,6 @@
 
         if (t.date === selectedDate) {
           daySales += t.total;
-          dayGrossProfit += netProf;
           dayRemainingBalance += (t.balance || 0);
           if (t.location === 'Hiway') { dayHiwaySales += t.total; dayHiwayGrossProfit += netProf; }
           else if (t.location === 'Byahe') { dayByaheSales += t.total; dayByaheGrossProfit += netProf; }
@@ -2729,18 +2275,16 @@
         });
       }
 
-      let dayHiwayNet = dayHiwayGrossProfit;
-      let dayByaheNet = dayByaheGrossProfit;
-      let dayNetProfit = (dayHiwayNet + dayByaheNet) - dayExpensesTotal;
+      let dayNetProfit = (dayHiwayGrossProfit + dayByaheGrossProfit) - dayExpensesTotal;
       let totalNonCashToday = totalByaheCash + totalGCash + totalBT + totalCheque;
       let cashSalesToday = daySales - totalNonCashToday;
      
       currentTargetCashInDrawer = Math.max(0, cashSalesToday + dayDebtPayments - dayExpensesTotal - dayRemainingBalance);
 
       document.getElementById('dailyHiwaySales').innerText = `₱${dayHiwaySales.toFixed(2)}`;
-      document.getElementById('dailyHiwayProfit').innerText = `₱${dayHiwayNet.toFixed(2)}`;
+      document.getElementById('dailyHiwayProfit').innerText = `₱${dayHiwayGrossProfit.toFixed(2)}`;
       document.getElementById('dailyByaheSales').innerText = `₱${dayByaheSales.toFixed(2)}`;
-      document.getElementById('dailyByaheProfit').innerText = `₱${dayByaheNet.toFixed(2)}`;
+      document.getElementById('dailyByaheProfit').innerText = `₱${dayByaheGrossProfit.toFixed(2)}`;
       document.getElementById('dailyTotalSales').innerText = `₱${daySales.toFixed(2)}`;
       document.getElementById('dailyTotalCollected').innerText = `₱${dayCollected.toFixed(2)}`;
       document.getElementById('dailyTotalNetProfit').innerText = `₱${dayNetProfit.toFixed(2)}`;
@@ -2837,19 +2381,7 @@
       transactions.forEach(t => {
         if ((t.balance || 0) > 0.01) {
           creditCount++;
-          tbody.innerHTML += `
-            <tr>
-              <td class="fw-bold">${t.customer}</td>
-              <td><span class="badge bg-secondary">${t.location}</span></td>
-              <td>${t.product}</td>
-              <td>₱${(t.totalCost || 0).toFixed(2)}</td>
-              <td class="text-success">₱${(t.paid || 0).toFixed(2)}</td>
-              <td class="text-danger fw-bold">₱${(t.balance || 0).toFixed(2)}</td>
-              <td>${t.dueDate || 'N/A'}</td>
-              <td><span class="badge bg-warning text-dark">${t.status}</span></td>
-              <td><button class="btn btn-sm btn-success" onclick="alert('Pumunta sa Order Lookup para magbayad o i-edit.')">Magbayad</button></td>
-            </tr>
-          `;
+          tbody.innerHTML += `<tr><td class="fw-bold">${t.customer}</td><td><span class="badge bg-secondary">${t.location}</span></td><td>${t.product}</td><td>₱${(t.totalCost || 0).toFixed(2)}</td><td class="text-success">₱${(t.paid || 0).toFixed(2)}</td><td class="text-danger fw-bold">₱${(t.balance || 0).toFixed(2)}</td><td>${t.dueDate || 'N/A'}</td><td><span class="badge bg-warning text-dark">${t.status}</span></td><td></td></tr>`;
         }
       });
       if (creditCount === 0) tbody.innerHTML = `<tr><td colspan="9" class="text-center text-muted py-3">Walang aktibong utang.</td></tr>`;
